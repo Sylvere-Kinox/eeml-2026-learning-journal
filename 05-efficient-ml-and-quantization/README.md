@@ -1,48 +1,35 @@
-# Jour 5 — Apprentissage Efficace, Quantification (GPTQ) & IA pour la Santé
+# Jour 5 — Apprentissage efficace, compression de modèles et IA médicale
 
-> **Date** : 31 juillet 2026  
-> **Intervenants principaux** : Dan Alistarh (IST Austria / Neural Magic), Elma Dervishi, Suad Glass (ANT)  
-> **Thèmes** : Bitter Lesson, Élagage optimal (OBS), Algorithme GPTQ, Réseaux de comorbidité médicale.  
-> **Documents disponibles** :
-> - 📄 **[Lire les notes complètes en PDF](eeml-2026-day5-efficient-ml.pdf)** *(15 pages, lisible directement sur GitHub)*
-> - 📝 **[Document source Word éditable](EEML_2026_Jour5_Notes.docx)**
+Date : 31 juillet 2026  
+Intervenants : Dan Alistarh (IST Austria / Neural Magic), Elma Dervishi, Suad Glass (ANT)  
+Thèmes : Élagage de réseaux (Optimal Brain Surgeon), quantification post-entraînement (GPTQ), réseaux de comorbidité médicale.
 
----
+Documents :
+- [Notes complètes (PDF)](eeml-2026-day5-efficient-ml.pdf)
+- [Document source Word](EEML_2026_Jour5_Notes.docx)
 
-## 🎯 Vue d'ensemble en un coup d'œil
+## Synthèse
 
-### 1. Apprentissage efficace en calcul & Compression de modèles (Dan Alistarh)
-* **La « Bitter Lesson » de Rich Sutton** : Les méthodes tirant parti du passage à l'échelle et du calcul brut l'emportent toujours sur les heuristiques artisanales humaines — mais ce constat crée un mur énergétique et matériel insoutenable.
-* **Fondements mathématiques de l'élagage (*Pruning*)** :
-  - Pourquoi supprimer les plus petits poids en valeur absolue (*magnitude pruning*) est sous-optimal.
-  - Dérivation taylorienne d'ordre 2 de la fonction de perte : l'impact de la suppression d'un paramètre $w_q$ dépend de l'inverse de la matrice hessienne $H^{-1}$ :
+### 1. Compression et passage à l'échelle (Dan Alistarh)
+- **Coût computationnel et Bitter Lesson** : limites pratiques de l'augmentation continue de la taille des modèles.
+- **Fondements mathématiques de l'élagage (Pruning)** :
+  - Limites de la suppression basée uniquement sur l'amplitude des poids (*magnitude pruning*).
+  - Développement de Taylor d'ordre 2 de la fonction de perte et formulation de l'Optimal Brain Surgeon (OBS) :
     $$L_q = \frac{1}{2} \frac{w_q^2}{[H^{-1}]_{qq}}$$
-  - **Optimal Brain Surgeon (OBS)** : Compensation analytique des poids restants lors de la suppression de chaque paramètre :
+  - Compensation des poids restants après élimination d'un paramètre :
     $$\delta \mathbf{w} = - \frac{w_q}{[H^{-1}]_{qq}} H^{-1} \mathbf{e}_q$$
-* **L'algorithme de quantification GPTQ (General Post-Training Quantization)** :
-  - Passage à l'échelle pour des modèles de plusieurs dizaines ou centaines de milliards de paramètres.
-  - Inversion et régularisation de Cholesky du Hessien empirique calculé sur un petit ensemble de calibration ($H = 2 X X^\top + \lambda I$).
-  - Quantification colonne par colonne par blocs avec propagation matricielle paresseuse (*lazy batch update*).
-  - Résultats remarquables : compression de modèles de FP16 à INT4 (voire INT3) avec une perplexité quasiment identique à l'original et une exécution ultra-rapide sur GPU grand public.
+- **Algorithme GPTQ** :
+  - Adaptation de la méthode OBS aux modèles de grande taille via une décomposition de Cholesky du Hessien empirique régularisé ($H = 2 X X^\top + \lambda I$).
+  - Quantification colonne par colonne par blocs avec mise à jour matricielle par lots.
+  - Réduction de la précision de FP16 à INT4/INT3 sans dégradation marquée de la perplexité.
 
-### 2. IA pour la médecine & Trajectoires de santé
-* **Modélisation des réseaux de comorbidité** : Cartographie des relations causales et corrélations entre pathologies à partir de dossiers médicaux électroniques longitudinaux.
-* **Repositionnement de molécules thérapeutiques** : Utilisation de réseaux de neurones sur graphes hétérogènes (gènes, protéines, molécules, phénotypes) pour identifier de nouvelles indications thérapeutiques à des médicaments déjà approuvés par les autorités sanitaires.
+### 2. Applications biomédicales et recherche régionale
+- Réseaux de comorbidité : analyse causale et temporelle à partir de données de dossiers de santé longitudinaux.
+- Repositionnement de molécules existantes sur de nouvelles cibles thérapeutiques à l'aide de graphes biomoléculaires hétérogènes.
+- Analyse spectrale de graphes orientés acycliques (DAG) et détection d'anomalies sur signaux physiologiques.
 
-### 3. Vitrine de recherche régionale & Engagement
-* Études de cas appliquées dans les Balkans : détection d'anomalies sur signaux biomédicaux (fibrillation auriculaire) et modélisation spectrale de graphes orientés acycliques (DAG).
-* Rôle sociétal et démonstration de l'impact du bénévolat scientifique pour bâtir des passerelles éducatives durables (association ANT).
+## Formule clé : Mise à jour des poids dans GPTQ
 
----
-
-## 💡 Formule clé : La mise à jour GPTQ
-
-Lors de la quantification de la colonne $q$ de la matrice de poids vers sa valeur discrète la plus proche $Q(w_q)$, le vecteur de correction appliqué aux colonnes non encore quantifiées $w_{:, i}$ ($i > q$) est donné par :
+Lors de la quantification de la colonne $q$ vers $Q(w_q)$, la mise à jour des colonnes restantes $w_{:, i}$ ($i > q$) est :
 
 $$\Delta \mathbf{w}_{:, >q} = - \frac{w_{:, q} - Q(w_{:, q})}{[H^{-1}]_{qq}} \cdot [H^{-1}]_{q, >q}$$
-
-Cette formule élégante garantit que l'erreur de quantification commise sur un groupe de poids est instantanément compensée par les poids voisins avant que ces derniers ne soient eux-mêmes quantifiés.
-
----
-
-📖 **Pour approfondir les démonstrations de Taylor d'ordre 2 et les benchmarks GPTQ :** consultez **[eeml-2026-day5-efficient-ml.pdf](eeml-2026-day5-efficient-ml.pdf)**.

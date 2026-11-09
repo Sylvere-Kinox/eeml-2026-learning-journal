@@ -1,47 +1,39 @@
-# Jour 6 — Apprentissage Profond Géométrique (GDL) & Éthique de l'IA
+# Jour 6 — Deep Learning géométrique et éthique de l'IA
 
-> **Date** : 1er août 2026 (Dernière journée de l'école d'été)  
-> **Intervenants principaux** : Petar Veličković (Google DeepMind), Dorothy Chou (Google DeepMind), Magd, Mariana Neshovska  
-> **Thèmes** : Programme d'Erlangen, Invariance & Équivariance, GNN & Transformers, Réécriture des trajectoires, Éthique critique de l'IA.  
-> **Documents disponibles** :
-> - 📄 **[Lire les notes complètes en PDF](eeml-2026-day6-geometric-dl-ethics.pdf)** *(15 pages, lisible directement sur GitHub)*
-> - 📝 **[Document source Word éditable](EEML_2026_Jour6_Notes.docx)**
+Date : 1er août 2026  
+Intervenants : Petar Veličković (Google DeepMind), Dorothy Chou (Google DeepMind), Magd, Mariana Neshovska  
+Thèmes : Programme d'Erlangen, invariance et équivariance, GNN et Transformers, carrières en recherche, éthique critique de l'IA.
 
----
+Documents :
+- [Notes complètes (PDF)](eeml-2026-day6-geometric-dl-ethics.pdf)
+- [Document source Word](EEML_2026_Jour6_Notes.docx)
 
-## 🎯 Vue d'ensemble en un coup d'œil
+## Synthèse
 
-### 1. Geometric Deep Learning — GDL (Petar Veličković, DeepMind)
-* **Le Programme d'Erlangen transposé au Deep Learning** : De même que Felix Klein a unifié la géométrie au XIXe siècle à travers la théorie des groupes de symétries, le GDL unifie toutes les architectures neuronales modernes à travers leurs symétries sous-jacentes.
-* **Le plan directeur : Invariance et Équivariance** :
-  - **Équivariance** sous l'action d'un groupe $G$ : $f(\rho(g) \cdot x) = \rho'(g) \cdot f(x)$ (les transformations en entrée se répercutent de façon prévisible en sortie).
-  - **Invariance** : $f(\rho(g) \cdot x) = f(x)$ (la sortie ne change pas quelle que soit la transformation appliquée en entrée).
-* **La taxonomie des 5 domaines géométriques (les 5 Gs)** :
-  1. **Grilles régulières ($\mathbb{Z}^2$)** : La symétrie par translation mène canoniquement aux convolutions (**CNN**).
-  2. **Graphes et ensembles non ordonnés** : La symétrie par permutation des nœuds $\mathcal{S}_n$ impose le paradigme du passage de messages (**Message Passing Neural Networks - MPNN**).
-  3. **Les Transformers vus comme des GNNs** : Démonstration mathématique qu'un Transformer est un GNN opérant sur un graphe complet où la matrice d'adjacence est calculée dynamiquement via le mécanisme de Softmax attention.
-  4. **Groupes et espaces sphériques ($\text{SO}(3)$)** : Architectures équivariantes pour la modélisation moléculaire 3D et les dynamiques de particules.
-  5. **Variétés riemanniennes & Fibrés de jauge** : Théorie des jauges, transport parallèle et applications biomoléculaires (fondements géométriques d'**AlphaFold**).
+### 1. Geometric Deep Learning — GDL (Petar Veličković)
+- **Programme d'Erlangen pour l'apprentissage profond** : unification des architectures neuronales à travers les groupes de symétries des domaines sous-jacents.
+- **Principes d'équivariance et d'invariance** sous l'action d'un groupe $G$ :
+  - Équivariance : $f(\rho(g) \cdot x) = \rho'(g) \cdot f(x)$
+  - Invariance : $f(\rho(g) \cdot x) = f(x)$
+- **Taxonomie des domaines géométriques (les 5 Gs)** :
+  - Grilles régulières : translation -> Convolutions (CNN).
+  - Graphes : invariance par permutation des nœuds $\mathcal{S}_n$ -> Message Passing Neural Networks (MPNN).
+  - Transformers comme GNN : équivalence entre auto-attention et passage de messages sur un graphe complet avec arêtes pondérées dynamiquement.
+  - Groupes et sphères $\text{SO}(3)$ : architectures équivariantes pour la chimie et les données 3D.
+  - Variétés riemanniennes et fibrés de jauge : transport parallèle et géométrie sur surfaces (AlphaFold).
 
-### 2. Réécrire les règles de sa carrière en IA (Dorothy Chou, DeepMind)
-* Déconstruction des 3 mythes académiques traditionnels (linéarité des carrières, isolement du chercheur, primauté du prestige institutionnel).
-* Stratégies d'impact pour les chercheurs et ingénieurs issus de régions sous-représentées (comme l'Afrique ou l'Europe de l'Est).
+### 2. Écosystèmes et carrières en recherche (Dorothy Chou)
+- Analyse des parcours non linéaires en recherche en intelligence artificielle.
+- Développement de communautés de recherche dans les régions sous-représentées (exemple d'AI Albania).
 
-### 3. La réalité du travail en éthique et impact sociétal de l'IA (Magd)
-* **Distinguer l'éthique de l'IA de l'ingénierie de sécurité (*AI Safety*)** : Pourquoi l'alignement technique ne résout pas les questions de redistribution du pouvoir, d'inégalités économiques et d'impacts environnementaux.
-* **Le coût personnel et institutionnel** : Les effets *Sagan* et *Gebru* dans les carrières des scientifiques alertant sur les dérives sociétales.
-* **L'absence de vérité terrain (*ground truth*)** : Pourquoi les méthodes supervisées classiques échouent à modéliser des concepts politiques ou sociétaux fondamentalement contestés.
+### 3. Éthique et impacts sociétaux de l'IA (Magd)
+- Distinction entre éthique de l'IA (analyse des rapports de pouvoir, impacts économiques et environnementaux) et ingénierie de sécurité technique (*safety/alignment*).
+- Spécificités de l'évaluation sociétale : absence de vérité de terrain (*ground truth*) sur les questions politiques et sociales contestées.
 
----
+## Principe d'unification : L'Attention comme Message Passing
 
-## 💡 Théorème & Principe unificateur : L'Attention comme Message Passing
-
-Dans un réseau de neurones sur graphe avec passage de messages (MPNN) :
+Dans un réseau sur graphe avec passage de messages :
 
 $$\mathbf{h}_i^{(t+1)} = \phi \left( \mathbf{h}_i^{(t)}, \bigoplus_{j \in \mathcal{N}(i)} \psi(\mathbf{h}_i^{(t)}, \mathbf{h}_j^{(t)}) \right)$$
 
-Lorsque le voisinage $\mathcal{N}(i)$ correspond à l'ensemble de tous les tokens de la séquence ($V$), que la fonction de message $\psi$ calcule les paires Query-Key pondérées par Value, et que l'agrégateur $\bigoplus$ est une somme pondérée par Softmax, **on retrouve rigoureusement le bloc d'auto-attention du Transformer**.
-
----
-
-📖 **Pour approfondir les dérivations d'équivariance de jauge et les fondements du GDL :** consultez **[eeml-2026-day6-geometric-dl-ethics.pdf](eeml-2026-day6-geometric-dl-ethics.pdf)**.
+Lorsque le voisinage $\mathcal{N}(i)$ est l'ensemble complet des jetons et que l'agrégateur est une somme pondérée par l'attention Softmax, l'opération coïncide avec le bloc d'auto-attention des Transformers.
